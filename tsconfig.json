@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "module": "ESNext",    // Or "ES6" for older versions
+      "target": "ESNext",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "outDir": "./dist",
+      "rootDir": "./"
+    },
+    "include": ["**/*.ts"],
+    "exclude": ["node_modules", "**/*.test.ts"]
+  }

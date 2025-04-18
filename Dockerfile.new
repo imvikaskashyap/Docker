@@ -1,0 +1,38 @@
+FROM node:20-alpine3.18 AS base
+
+# Builder stage
+FROM base AS builder
+
+# Set working directory and create /app if it doesn't exist
+WORKDIR /app
+
+# Explicitly copy package.json and package-lock.json
+COPY package.json package-lock.json ./
+COPY tsconfig.json ./
+RUN npm install
+
+# Copy all other files (like source code)
+COPY . .
+
+# Run build
+RUN npm run build
+
+
+# Production stage
+FROM base AS production
+WORKDIR /app
+
+# Copy build output, package.json, and tsconfig.json from builder
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/tsconfig.json ./
+
+# Install production dependencies
+RUN npm install --omit=dev
+
+RUN npm cache clean --force
+
+EXPOSE 8000
+# ENV PORT=6000
+CMD ["node", "--enable-source-maps", "dist/index.js"]
+
